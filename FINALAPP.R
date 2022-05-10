@@ -37,15 +37,21 @@ dashboardBody(
     ),
     tabItem(
       tabName = "TimeSeries",
-      plotlyOutput("TimeSeries")
+      plotlyOutput("TimeSeries"),
+      h5("When looking at the time series, seasonality, and autocorrelation plots you can see that this data has a decreasing trend, 
+ with little to no seasonality. It does seem to have autocorrelation.")
     ),
     tabItem(
       tabName = "Seasonality",
-      plotlyOutput("Seasonality")
+      plotlyOutput("Seasonality"),
+      h5("When looking at the time series, seasonality, and autocorrelation plots you can see that this data has a decreasing trend, 
+ with little to no seasonality. It does seem to have autocorrelation.")
     ),
     tabItem(
       tabName = "Autocorrelation",
-      plotlyOutput("ACF")
+      plotOutput("ACF"),
+      h5("When looking at the time series, seasonality, and autocorrelation plots you can see that this data has a decreasing trend, 
+ with little to no seasonality. It does seem to have autocorrelation.")
     ),
     tabItem(
       tabName = "Decomposition",
@@ -78,18 +84,6 @@ dashboardBody(
   )
 ))
 
-
-
-#     ,
-# 
-# h4("Time Series"), plotOutput('TimeSeries'),
-# h4("Seasonality"), plotOutput('Seasonality'),
-# h4("Autocorrelation"), plotOutput('ACF'),
-# h4("Decomposition"), plotOutput('Decomposition'),
-# h4("ARIMA"), plotOutput('ARIMA'),
-# h4("Holts"), plotOutput('Holts')
-# )
-
 server <- function(input, output) { 
 
   output$TimeSeries <- renderPlotly({
@@ -112,7 +106,7 @@ output$ARIMA <- renderPlot ({ fit <- df %>%
     autoarima = ARIMA(Count),
     manualwdrift = ARIMA(Count ~ 1 + pdq(0, 1, 0))
   )
-fc <- fit %>% forecast(h = "3 years")
+fc <- fit %>% forecast(h = "5 years")
 fc %>%
   autoplot(df)
 })
@@ -124,26 +118,26 @@ output$Holts <- renderPlot ({fit <- df %>%
     multiplicative = ETS(Count ~ error("M") + trend("A") +
                            season("M"))
   )
-fc <- fit %>% forecast(h = "3 years")
+fc <- fit %>% forecast(h = "5 years")
 fc %>%
   autoplot(df, level = NULL)
 })
 
 output$Naive <- renderPlot ({  fit <- df %>% model(NAIVE(Count))
-fc <- fit %>% forecast(h = "3 years")
+fc <- fit %>% forecast(h = "5 years")
 fc %>%
   autoplot(df)
 })
 
 output$SeasonalNaive <- renderPlot  ({   fit <- df %>% model(SNAIVE(Count))
-fc <- fit %>% forecast(h = "3 years")
+fc <- fit %>% forecast(h = "5 years")
 fc %>%
   autoplot(df)
 })
 
 
 output$Mean <- renderPlot ({    fit <- df %>% model(MEAN(Count))
-fc <- fit %>% forecast(h = "3 years")
+fc <- fit %>% forecast(h = "5 years")
 fc %>%
   autoplot(df)
 })
@@ -151,7 +145,7 @@ fc %>%
 
 
 output$Drift <- renderPlot ({  fit <- df %>% model(NAIVE(Count ~ drift()))
-fc <- fit %>% forecast(h = "3 years")
+fc <- fit %>% forecast(h = "5 years")
 fc %>%
   autoplot(df)
 })
